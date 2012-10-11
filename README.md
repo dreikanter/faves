@@ -2,6 +2,7 @@
 
 A python script to dump your last.fm faves list into simplified JSON:
 
+```JSON
 [
     {
         "date": "2012/05/20", 
@@ -19,3 +20,4 @@ A python script to dump your last.fm faves list into simplified JSON:
         "artist": "Bryan Adams"
     }
 ]
+```
