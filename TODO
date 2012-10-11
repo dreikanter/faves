@@ -1,0 +1,8 @@
+- Configure through command line options
+- Use logging module against prints
+- Search and download music from vk.com - http://musicshara.ru, http://vk.com/page-1_2369282
+- YYYY-MM-DD prefix
+- Generate m3u playlist
+- Fix ID3 tags - http://wiki.python.org/moin/UsefulModules#ID3_Handling
+- Incremental download
+- Stats: total songs number, found and downloaded percentage, etc
