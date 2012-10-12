@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 import codecs
 from datetime import datetime
 import json
+import hashlib
 import logging
 import os
 from pprint import pformat, pprint
@@ -15,6 +16,9 @@ __version__ = '0.0.1'
 LOG_CONSOLE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%H:%M:%S")
 LOG_FILE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%Y/%m/%d %H:%M:%S")
 LASTFM_API_URL = 'http://ws.audioscrobbler.com/2.0/?'
+VK_API_URL = 'http://api.vk.com/api.php'
+VK_AUTH_URL = 'https://api.vk.com/oauth/access_token'
+VK_API_VERSION='3.0'
 
 
 log = None
@@ -153,16 +157,30 @@ def get_faves(user, key):
 
 
 def get_vk_token():
-    data = req('https://api.vkontakte.ru/oauth/access_token',
+    data = req(VK_AUTH_URL,
                client_id=conf['vk_id'],
                client_secret=conf['vk_secret'],
                grant_type='client_credentials')
     return data['access_token']
 
 
+# def vkreq(method, sid):
+#     data = req(VK_API_URL,
+#                api_id=conf['vk_id'],
+#                method=method,
+#                sig=sig(),
+#                v=VK_API_VERSION,
+#                format='JSON',
+#                sid=sid)
+
+
+def sig():
+    pass
+
+
 def main():
     init()
-    print pformat(get_vk_token())
+    print(get_vk_token())
 
     # faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
     # dump_file = os.path.join(conf['dl_path'], 'faves.json')
