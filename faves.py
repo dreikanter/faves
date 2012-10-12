@@ -1,24 +1,78 @@
 #!/usr/bin/env python
 
+from argparse import ArgumentParser
 import codecs
 from datetime import datetime
 import json
 import logging
 import os
+from pprint import pformat
 import requests
 import time
 
+__version__ = '0.0.1'
+
 LOG_CONSOLE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%H:%M:%S")
 LOG_FILE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%Y/%m/%d %H:%M:%S")
+API_URL = 'http://ws.audioscrobbler.com/2.0/?'
 
-lastfm_key = '1f4891f6fd8ecabbefd751deba2c95b7'  # It's a test key from API docs
-lastfm_user = 'dreikanter'
-api_url = 'http://ws.audioscrobbler.com/2.0/?'
-dump_file = 'faves.json'
-log_file = '%s.log' % __name__
+
+log = None
+conf = None
+
+
+def init():
+    """Script initialization"""
+
+    args = get_args()
+
+    global conf
+    conf = {
+        'lastfm_user': args.lastfm_user,
+        'lastfm_key': args.k,
+        'dl_path': args.d.replace('$user', args.lastfm_user),
+    }
+
+    global log
+    log = get_logger(args.l, args.v)
+
+
+def get_args():
+    """Command line parsing"""
+
+    d = 'last.fm faves fetcher, v' + __version__
+    e = 'Have fun!'
+    parser = ArgumentParser(description=d, epilog=e)
+
+    parser.add_argument('lastfm_user',
+                        metavar='USER',
+                        help='last.fm user name')
+
+    parser.add_argument('-d',
+                        metavar='PATH',
+                        default='$user-faves',
+                        help='downloads directory path')
+
+    # Default value is a test key from API docs
+    parser.add_argument('-k',
+                        metavar='KEY',
+                        default='1f4891f6fd8ecabbefd751deba2c95b7',
+                        help='last.fm api key')
+
+    parser.add_argument('-v',
+                        action='store_true',
+                        help='verbose logging')
+
+    parser.add_argument('-l',
+                        metavar='LOG',
+                        help='log to file')
+
+    return parser.parse_args()
 
 
 def get_logger(log_file=None, verbose=False):
+    """Logging initialization"""
+
     try:
         log = logging.getLogger(__name__)
         log.setLevel(logging.DEBUG)
@@ -53,7 +107,7 @@ def makedirs(dir_path):
 
 def req(**kwargs):
     get_params = ["%s=%s" % (k, v) for k, v in kwargs.iteritems()]
-    url = api_url + '&'.join(get_params)
+    url = API_URL + '&'.join(get_params)
     r = requests.get(url)
     return json.loads(r.text)
 
@@ -89,9 +143,12 @@ def get_faves(user, key):
     return result
 
 
-log = get_logger(log_file, True)
-faves = get_faves(lastfm_user, lastfm_key)
+init()
+log.debug(pformat(conf))
 
+faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
+dump_file = os.path.join(conf['dl_path'], 'faves.json')
+makedirs(conf['dl_path'])
 with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
     f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
 

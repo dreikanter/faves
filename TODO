@@ -1,5 +1,5 @@
-- Configure through command line options
-- Use logging module against prints
++ Configure through command line options @done (12-10-12 13:32)
++ Use logging module against prints @done (12-10-12 13:05)
 - Search and download music from vk.com - http://musicshara.ru, http://vk.com/page-1_2369282
 - YYYY-MM-DD prefix
 - Generate m3u playlist
