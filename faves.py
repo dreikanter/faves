@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 import logging
 import os
-from pprint import pformat
+from pprint import pformat, pprint
 import requests
 import time
 
@@ -14,7 +14,7 @@ __version__ = '0.0.1'
 
 LOG_CONSOLE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%H:%M:%S")
 LOG_FILE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%Y/%m/%d %H:%M:%S")
-API_URL = 'http://ws.audioscrobbler.com/2.0/?'
+LASTFM_API_URL = 'http://ws.audioscrobbler.com/2.0/?'
 
 
 log = None
@@ -113,9 +113,9 @@ def makedirs(dir_path):
         os.makedirs(dir_path)
 
 
-def req(**kwargs):
+def req(url, **kwargs):
     get_params = ["%s=%s" % (k, v) for k, v in kwargs.iteritems()]
-    url = API_URL + '&'.join(get_params)
+    url = '%s?%s' % (url, '&'.join(get_params))
     r = requests.get(url)
     return json.loads(r.text)
 
@@ -124,7 +124,8 @@ def get_faves(user, key):
     page = 1
     result = []
     while True:
-        data = req(method='user.getlovedtracks',
+        data = req(LASTFM_API_URL,
+                   method='user.getlovedtracks',
                    user=user,
                    api_key=key,
                    format='json',
@@ -151,17 +152,25 @@ def get_faves(user, key):
     return result
 
 
+def get_vk_token():
+    data = req('https://api.vkontakte.ru/oauth/access_token',
+               client_id=conf['vk_id'],
+               client_secret=conf['vk_secret'],
+               grant_type='client_credentials')
+    return data['access_token']
+
+
 def main():
     init()
-    log.debug(pformat(conf))
+    print pformat(get_vk_token())
 
-    faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
-    dump_file = os.path.join(conf['dl_path'], 'faves.json')
-    makedirs(conf['dl_path'])
-    with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
-        f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
+    # faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
+    # dump_file = os.path.join(conf['dl_path'], 'faves.json')
+    # makedirs(conf['dl_path'])
+    # with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
+    #     f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
 
-    log.info("%d faves saved to '%s'" % (len(faves), dump_file))
+    # log.info("%d faves saved to '%s'" % (len(faves), dump_file))
 
 
 if __name__ == '__main__':
