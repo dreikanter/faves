@@ -6,3 +6,4 @@
 - Fix ID3 tags - http://wiki.python.org/moin/UsefulModules#ID3_Handling
 - Incremental download
 - Stats: total songs number, found and downloaded percentage, etc
+- setup.py

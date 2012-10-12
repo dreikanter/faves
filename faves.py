@@ -29,8 +29,10 @@ def init():
     global conf
     conf = {
         'lastfm_user': args.lastfm_user,
-        'lastfm_key': args.k,
+        'lastfm_key': args.lk,
         'dl_path': args.d.replace('$user', args.lastfm_user),
+        'vk_id': args.vi,
+        'vk_secret': args.vs,
     }
 
     global log
@@ -53,11 +55,17 @@ def get_args():
                         default='$user-faves',
                         help='downloads directory path')
 
-    # Default value is a test key from API docs
-    parser.add_argument('-k',
+    parser.add_argument('-lk',
                         metavar='KEY',
-                        default='1f4891f6fd8ecabbefd751deba2c95b7',
                         help='last.fm api key')
+
+    parser.add_argument('-vi',
+                        metavar='ID',
+                        help='vk.com api id')
+
+    parser.add_argument('-vs',
+                        metavar='SECRET',
+                        help='vk.com api secret')
 
     parser.add_argument('-v',
                         action='store_true',

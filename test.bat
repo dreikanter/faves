@@ -1,1 +1,3 @@
-python faves.py dreikanter -k 1f4891f6fd8ecabbefd751deba2c95b7 -l faves.log -v
+@echo off
+call ..\faves-private\env.bat
+python faves.py dreikanter -lk %lastfm_key% -vi %vk_id% -vs %vk_secret% -l faves.log -v
