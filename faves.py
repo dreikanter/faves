@@ -143,13 +143,18 @@ def get_faves(user, key):
     return result
 
 
-init()
-log.debug(pformat(conf))
+def main():
+    init()
+    log.debug(pformat(conf))
 
-faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
-dump_file = os.path.join(conf['dl_path'], 'faves.json')
-makedirs(conf['dl_path'])
-with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
-    f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
+    faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
+    dump_file = os.path.join(conf['dl_path'], 'faves.json')
+    makedirs(conf['dl_path'])
+    with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
+        f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
 
-log.info("%d faves saved to '%s'" % (len(faves), dump_file))
+    log.info("%d faves saved to '%s'" % (len(faves), dump_file))
+
+
+if __name__ == '__main__':
+    main()
