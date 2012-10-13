@@ -4,10 +4,8 @@ from argparse import ArgumentParser
 import codecs
 from datetime import datetime
 import json
-import hashlib
 import logging
 import os
-from pprint import pformat, pprint
 import requests
 import time
 
@@ -16,9 +14,6 @@ __version__ = '0.0.1'
 LOG_CONSOLE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%H:%M:%S")
 LOG_FILE_FMT = ("%(asctime)s %(levelname)s: %(message)s", "%Y/%m/%d %H:%M:%S")
 LASTFM_API_URL = 'http://ws.audioscrobbler.com/2.0/?'
-VK_API_URL = 'http://api.vk.com/api.php'
-VK_AUTH_URL = 'https://api.vk.com/oauth/access_token'
-VK_API_VERSION='3.0'
 
 
 log = None
@@ -35,8 +30,6 @@ def init():
         'lastfm_user': args.lastfm_user,
         'lastfm_key': args.lk,
         'dl_path': args.d.replace('$user', args.lastfm_user),
-        'vk_id': args.vi,
-        'vk_secret': args.vs,
     }
 
     global log
@@ -61,15 +54,8 @@ def get_args():
 
     parser.add_argument('-lk',
                         metavar='KEY',
+                        default='1f4891f6fd8ecabbefd751deba2c95b7',
                         help='last.fm api key')
-
-    parser.add_argument('-vi',
-                        metavar='ID',
-                        help='vk.com api id')
-
-    parser.add_argument('-vs',
-                        metavar='SECRET',
-                        help='vk.com api secret')
 
     parser.add_argument('-v',
                         action='store_true',
@@ -119,8 +105,7 @@ def makedirs(dir_path):
 
 def req(url, **kwargs):
     get_params = ["%s=%s" % (k, v) for k, v in kwargs.iteritems()]
-    url = '%s?%s' % (url, '&'.join(get_params))
-    r = requests.get(url)
+    r = requests.get(url + '&'.join(get_params))
     return json.loads(r.text)
 
 
@@ -156,39 +141,15 @@ def get_faves(user, key):
     return result
 
 
-def get_vk_token():
-    data = req(VK_AUTH_URL,
-               client_id=conf['vk_id'],
-               client_secret=conf['vk_secret'],
-               grant_type='client_credentials')
-    return data['access_token']
-
-
-# def vkreq(method, sid):
-#     data = req(VK_API_URL,
-#                api_id=conf['vk_id'],
-#                method=method,
-#                sig=sig(),
-#                v=VK_API_VERSION,
-#                format='JSON',
-#                sid=sid)
-
-
-def sig():
-    pass
-
-
 def main():
     init()
-    print(get_vk_token())
+    faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
+    dump_file = os.path.join(conf['dl_path'], 'faves.json')
+    makedirs(conf['dl_path'])
+    with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
+        f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
 
-    # faves = get_faves(conf['lastfm_user'], conf['lastfm_key'])
-    # dump_file = os.path.join(conf['dl_path'], 'faves.json')
-    # makedirs(conf['dl_path'])
-    # with codecs.open(dump_file, mode='w', encoding='utf-8') as f:
-    #     f.write(json.dumps(faves, indent=4, encoding='utf-8', ensure_ascii=False))
-
-    # log.info("%d faves saved to '%s'" % (len(faves), dump_file))
+    log.info("%d faves saved to '%s'" % (len(faves), dump_file))
 
 
 if __name__ == '__main__':
