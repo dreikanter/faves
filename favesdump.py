@@ -55,7 +55,7 @@ def get_args():
     parser.add_argument('-k', '--key',
                         metavar='KEY',
                         default='1f4891f6fd8ecabbefd751deba2c95b7',
-                        help='last.fm api key')
+                        help='last.fm api key (use it to override defaults)')
 
     parser.add_argument('-v', '--verbose',
                         action='store_true',
