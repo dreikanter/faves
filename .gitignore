@@ -18,6 +18,4 @@ bild
 dist
 MANIFEST
 
-*.json
-*.yml
 *.log
