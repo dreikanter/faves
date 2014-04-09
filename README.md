@@ -2,7 +2,7 @@
 
 A python script to dump your last.fm faves list into simplified JSON:
 
-```JSON
+``` json
 [
     {
         "date": "2012/05/20", 
@@ -20,4 +20,18 @@ A python script to dump your last.fm faves list into simplified JSON:
         "artist": "Bryan Adams"
     }
 ]
+```
+
+Or YAML:
+
+``` yaml
+- artist: The Killers
+  date: 2014/04/08
+  name: I Can't Stay
+- artist: Michael Penn
+  date: 2014/04/03
+  name: Walter Reed
+- artist: The Handsome Family
+  date: 2014/04/02
+  name: Far From Any Road
 ```
