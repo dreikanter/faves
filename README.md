@@ -38,18 +38,26 @@ Or YAML:
 
 Installation:
 
-  pip install -e git+https://github.com/dreikanter/favesdump.git#egg=favesdump
+```
+pip install -e git+https://github.com/dreikanter/favesdump.git#egg=favesdump
+```
 
 Here are some usage examples. This command will dump faces for `username` using default file name and format settings:
 
-  favesdump username
+```
+favesdump username
+```
 
 This one will dump faves for `username` to `username.yml` file:
 
-  favesdump --path username.yml --format yaml username
+```
+favesdump --path username.yml --format yaml username
+```
 
 It is possible to use some autoreplacemnts to define your own output file format, which could be helpful for automation:
 
-  favesdump --path {timestamp}-{user}.{format} --format yaml username
+```
+favesdump --path {timestamp}-{user}.{format} --format yaml username
+```
 
 Use `favesdump --help` for command line usage.
