@@ -39,7 +39,7 @@ def init():
 def get_args():
     """Command line parsing"""
 
-    d = 'last.fm faves fetcher, v' + __version__
+    d = 'last.fm faves dumper, v' + __version__
     e = 'Have fun!'
     parser = ArgumentParser(description=d, epilog=e)
 
